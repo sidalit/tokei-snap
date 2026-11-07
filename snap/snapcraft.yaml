@@ -1,0 +1,60 @@
+name: tokei
+base: core26
+version: '15.0.0'
+title: Tokei
+summary: Count lines of code, comments and blank lines by language
+description: |
+  Tokei counts files, lines of code, comments and blank lines in a project,
+  grouped by language. It respects .gitignore and .tokeignore files and can
+  print JSON, YAML or CBOR for other tools.
+
+  **Examples**
+
+     tokei ./my-project
+     tokei ./my-project --files --sort code
+     tokei ./my-project --output json
+
+  **File access**
+
+  Tokei can count projects in your home directory. To also count projects on
+  USB drives and other removable media (/media, /mnt), run:
+
+     sudo snap connect tokei:removable-media
+license: MIT OR Apache-2.0
+grade: stable
+confinement: strict
+website: https://github.com/XAMPPRocky/tokei
+source-code:
+  - https://github.com/XAMPPRocky/tokei
+  - https://github.com/sidalit/tokei-snap
+issues:
+  - https://github.com/XAMPPRocky/tokei/issues
+  - https://github.com/sidalit/tokei-snap/issues
+contact: https://github.com/sidalit/tokei-snap/issues
+
+platforms:
+  amd64:
+  arm64:
+
+apps:
+  tokei:
+    command: bin/tokei
+    plugs:
+      - home
+      - removable-media
+
+parts:
+  tokei:
+    plugin: rust
+    source: https://github.com/XAMPPRocky/tokei.git
+    source-tag: v$SNAPCRAFT_PROJECT_VERSION
+    source-depth: 1
+    rust-channel: stable
+    # "all" adds the YAML and CBOR output formats to the default CLI.
+    rust-features: [all]
+    build-packages:
+      - build-essential
+    override-build: |
+      craftctl default
+      install -Dm644 LICENCE-MIT LICENCE-APACHE \
+        -t "$CRAFT_PART_INSTALL/usr/share/doc/tokei"
